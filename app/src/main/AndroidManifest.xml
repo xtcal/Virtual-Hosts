@@ -121,8 +121,8 @@
                     android:value=".VhostsActivity"/>
         </activity>
 
-        <activity android:name=".HostsEditorActivity"
-                  android:label="@string/editor_title"
+        <activity android:name=".RulesActivity"
+                  android:label="@string/rules_title"
                   android:parentActivityName=".VhostsActivity"
                   android:windowSoftInputMode="adjustResize"
                   android:exported="false">

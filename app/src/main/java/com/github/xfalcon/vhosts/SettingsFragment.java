@@ -18,28 +18,24 @@
 
 package com.github.xfalcon.vhosts;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.*;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-import androidx.preference.*;
-import com.github.xfalcon.vhosts.util.FileUtils;
-import com.github.xfalcon.vhosts.util.HttpUtils;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceScreen;
 import com.github.xfalcon.vhosts.util.LogUtils;
-import com.github.xfalcon.vhosts.vservice.DnsChange;
 import org.xbill.DNS.Address;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+/**
+ * 设置页。
+ *
+ * 远程 hosts 地址与下载已经移到规则列表页（RulesActivity），
+ * 因为"导入规则"和"管理规则"是同一件事，分在两处会让人不知道该去哪。
+ * 这里只留与规则无关的网络配置。
+ */
 public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -55,244 +51,79 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     public static final String IPV4_DNS = "IPV4_DNS";
     public static final String IS_CUS_DNS = "IS_CUS_DNS";
 
-    /** 内置编辑器写入的规则文件，放在 filesDir 下 */
+    /** 内置规则文件（由 RuleStore 管理） */
     public static final String LOCAL_HOST_FILE = "local_hosts";
 
-    /** 规则来源：内置编辑 / 本地文件 / 远程 URL */
+    /** 规则来源常量：保留以兼容升级路径，运行时已统一走 RuleStore */
     public static final String HOSTS_SOURCE = "HOSTS_SOURCE";
     public static final String SOURCE_BUILTIN = "BUILTIN";
     public static final String SOURCE_FILE = "FILE";
     public static final String SOURCE_URL = "URL";
 
-    /**
-     * 取当前规则来源。
-     *
-     * 老版本只有 IS_NET 一个布尔开关，升级上来的用户没有 HOSTS_SOURCE，
-     * 这里按旧值映射一次，保证行为不变。
-     */
-    public static String getHostsSource(Context context) {
-        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context);
-        String source = prefs.getString(HOSTS_SOURCE, null);
-        if (source != null) return source;
-        return prefs.getBoolean(IS_NET, false) ? SOURCE_URL : SOURCE_FILE;
-    }
-
-    public static void setHostsSource(Context context, String source) {
-        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context);
-        prefs.edit().putString(HOSTS_SOURCE, source).apply();
-    }
-
-    private Handler handler = null;
-
-
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
-        final SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         PreferenceScreen prefScreen = getPreferenceScreen();
-        handeleSummary(prefScreen, sharedPreferences);
-        Preference urlCustomPref = findPreference(HOSTS_URL);
         Preference dnsCustomPref = findPreference(IPV4_DNS);
 
-        dnsCustomPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        if (dnsCustomPref != null) {
+            dnsCustomPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                String ipv4_dns = (String)newValue;
-                try {
-                    Address.getByAddress(ipv4_dns);
-                    return true;
-                } catch (Exception e) {
-                    LogUtils.e(TAG, e.getMessage(), e);
-                    Toast.makeText(preference.getContext(), getString(R.string.dns4_error), Toast.LENGTH_LONG).show();
-                }
-                return false;
-            }
-        });
-
-
-//        dnsCustomPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//
-//            public boolean onPreferenceClick(Preference preference) {
-//                String ipv4_dns = sharedPreferences.getString(IPV4_DNS, "");
-//                try {
-//                    Address.getByAddress(ipv4_dns);
-//                    return true;
-//                } catch (Exception e) {
-//                    LogUtils.e(TAG, e.getMessage(), e);
-//                    Toast.makeText(preference.getContext(), getString(R.string.url_error), Toast.LENGTH_LONG).show();
-//                }
-//                return false;
-//            }
-//        });
-
-        urlCustomPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                String url = (String)newValue;
-                if (isUrl(url)) {
-                    setProgressDialog(preference.getContext(), url);
-                    return true;
-                } else {
-                    Toast.makeText(preference.getContext(), getString(R.string.url_error), Toast.LENGTH_LONG).show();
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    String ipv4_dns = (String) newValue;
+                    try {
+                        Address.getByAddress(ipv4_dns);
+                        return true;
+                    } catch (Exception e) {
+                        LogUtils.e(TAG, e.getMessage(), e);
+                        Toast.makeText(preference.getContext(),
+                                getString(R.string.dns4_error), Toast.LENGTH_LONG).show();
+                    }
                     return false;
                 }
+            });
+        }
+
+        updateRuleSummary();
+    }
+
+    private void updateRuleSummary() {
+        Preference pref = findPreference(PREF_RULES_ENTRY);
+        if (pref == null) return;
+        Context ctx = getContext();
+        if (ctx == null) return;
+        int count = RuleStore.count(ctx);
+        pref.setSummary(getString(R.string.rules_summary, count));
+        pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                startActivity(new android.content.Intent(
+                        preference.getContext(), RulesActivity.class));
+                return true;
             }
         });
-
-//        urlCustomPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//
-//            public boolean onPreferenceClick(Preference preference) {
-//                String url = sharedPreferences.getString(HOSTS_URL, "");
-//                if (isUrl(url)) {
-//                    setProgressDialog(preference.getContext(), url);
-//                    return true;
-//                } else {
-//                    Toast.makeText(preference.getContext(), getString(R.string.url_error), Toast.LENGTH_LONG).show();
-//                    return false;
-//                }
-//
-//            }
-//        });
     }
 
-    public void setProgressDialog(final Context context, final String url) {
-
-        int llPadding = 30;
-        LinearLayout ll = new LinearLayout(context);
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        ll.setPadding(llPadding, llPadding, llPadding, llPadding);
-        ll.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams llParam = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        llParam.gravity = Gravity.CENTER;
-        ll.setLayoutParams(llParam);
-
-        ProgressBar progressBar = new ProgressBar(context);
-        progressBar.setIndeterminate(true);
-        progressBar.setPadding(0, 0, llPadding, 0);
-        progressBar.setLayoutParams(llParam);
-
-        llParam = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        llParam.gravity = Gravity.CENTER;
-        TextView tvText = new TextView(context);
-        tvText.setText(getString(R.string.download_alert));
-        tvText.setTextColor(Color.parseColor("#000000"));
-        tvText.setTextSize(20);
-        tvText.setLayoutParams(llParam);
-
-        ll.addView(progressBar);
-        ll.addView(tvText);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setCancelable(true);
-        builder.setView(ll);
-
-        final AlertDialog dialog = builder.create();
-        Window window = dialog.getWindow();
-        if (window != null) {
-            WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-            layoutParams.copyFrom(dialog.getWindow().getAttributes());
-            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT;
-            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            dialog.getWindow().setAttributes(layoutParams);
-        }
-        handler = new Handler();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Looper.prepare();
-                    String result = HttpUtils.get(url);
-                    FileUtils.writeFile(context.openFileOutput(NET_HOST_FILE, Context.MODE_PRIVATE), result);
-                    // 只统计条数，不装载规则表：VPN 正在运行时这条线不该被覆盖
-                    int count = DnsChange.countOnly(context.openFileInput(NET_HOST_FILE));
-                    // 下载完把来源切到远程，否则文件下好了却还在读本地
-                    setHostsSource(context, SOURCE_URL);
-                    Toast.makeText(context, String.format(getString(R.string.down_success), count), Toast.LENGTH_LONG).show();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            dialog.hide();
-                        }
-                    });
-                    Looper.loop();
-                } catch (Exception e) {
-                    Toast.makeText(context, getString(R.string.down_error), Toast.LENGTH_LONG).show();
-                    LogUtils.e(TAG, e.getMessage(), e);
-                }
-
-            }
-        }).start();
-        dialog.show();
-
-    }
-
-    private void handeleSummary(PreferenceGroup preferenceGroup, SharedPreferences sharedPreferences) {
-        int count = preferenceGroup.getPreferenceCount();
-
-        for (int i = 0; i < count; i++) {
-            Preference p = preferenceGroup.getPreference(i);
-            if (p instanceof PreferenceCategory) {
-                handeleSummary((PreferenceCategory) p, sharedPreferences);
-            }
-            if (!(p instanceof CheckBoxPreference)) {
-                String value = sharedPreferences.getString(p.getKey(), "");
-                setPreferenceSummary(p, value);
-            }
-        }
-    }
-
-    private void setPreferenceSummary(Preference preference, String value) {
-        if (preference instanceof ListPreference) {
-            ListPreference listPreference = (ListPreference) preference;
-            int prefIndex = listPreference.findIndexOfValue(value);
-            if (prefIndex >= 0) {
-                listPreference.setSummary(listPreference.getEntries()[prefIndex]);
-            }
-        } else if (preference instanceof EditTextPreference) {
-            preference.setSummary(value);
-        }
-    }
-
-    public boolean isUrl(String str) {
-        String regex = "http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(str);
-        return matcher.matches();
-    }
+    public static final String PREF_RULES_ENTRY = "PREF_RULES_ENTRY";
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-                                          String key) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Preference preference = findPreference(key);
-        if (null != preference) {
-            if (!(preference instanceof CheckBoxPreference)) {
-                String value = sharedPreferences.getString(preference.getKey(), "");
-                setPreferenceSummary(preference, value);
-            }
+        if (null != preference && preference instanceof androidx.preference.EditTextPreference) {
+            String value = sharedPreferences.getString(preference.getKey(), "");
+            preference.setSummary(value);
         }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // create ContextThemeWrapper from the original Activity Context with the custom theme
-
-        // clone the inflater using the ContextThemeWrapper
         inflater.getContext().setTheme(R.style.AppPreferenceSettingsFragmentTheme);
-
-        // inflate the layout using the cloned inflater, not default inflater
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -300,6 +131,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     public void onResume() {
         super.onResume();
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        updateRuleSummary();
     }
 
     @Override
@@ -311,8 +143,6 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
 }

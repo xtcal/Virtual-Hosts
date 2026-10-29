@@ -21,15 +21,12 @@ package com.github.xfalcon.vhosts.vservice;
 import com.github.xfalcon.vhosts.util.LogUtils;
 import org.xbill.DNS.*;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class DnsChange {
 
@@ -103,79 +100,111 @@ public class DnsChange {
 
     }
 
-    public static int handle_hosts(InputStream inputStream) {
-        String STR_COMMENT = "#";
-        String HOST_PATTERN_STR = "^\\s*(" + STR_COMMENT + "?)\\s*(\\S*)\\s*([^" + STR_COMMENT + "]*)" + STR_COMMENT + "?(.*)$";
-        Pattern HOST_PATTERN = Pattern.compile(HOST_PATTERN_STR);
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            ConcurrentHashMap<String, String> maps4 = new ConcurrentHashMap<>();
-            ConcurrentHashMap<String, String> maps6 = new ConcurrentHashMap<>();
-            while (!Thread.interrupted() && (line = reader.readLine()) != null) {
-                if (line.length() > 1000 || line.startsWith(STR_COMMENT)) continue;
-                Matcher matcher = HOST_PATTERN.matcher(line);
-                if (matcher.find()) {
-                    String ip = matcher.group(2).trim();
-                    try {
-                        Address.getByAddress(ip);
-                    } catch (Exception e) {
-                        continue;
-                    }
-                    if (ip.contains(":")) {
-                        maps6.put(matcher.group(3).trim() + ".", ip);
-                    } else {
-                        maps4.put(matcher.group(3).trim() + ".", ip);
-                    }
-                }
+    /**
+     * 解析一行 hosts 内容，把其中的 IP 与全部域名逐个交给回调。
+     *
+     * 标准 hosts 语义允许一行多域名：
+     *   127.0.0.1  localhost  myapp.local  api.myapp.local
+     * 三个域名都该指向 127.0.0.1。原实现把 `([^#]*)` 整串当成一个域名去 put，
+     * 结果键里带着中间空格，任何 DNS 查询都匹配不上，三个域名全部静默失效。
+     * 这里改成按空白切分取出每个域名。
+     *
+     * 注释规则保持不变：行首 # 为整行注释，行内 # 之后为注释。
+     */
+    public interface RuleVisitor {
+        /** @return false 表示中止解析（例如只统计时不需要继续） */
+        boolean onRule(String ip, String domain);
+    }
+
+    public static void parseHosts(String content, RuleVisitor visitor) {
+        if (content == null) return;
+        String[] lines = content.split("\r?\n", -1);
+        for (String rawLine : lines) {
+            if (Thread.interrupted()) return;
+            if (rawLine.length() > 1000) continue;
+            String line = rawLine;
+            int hash = line.indexOf('#');
+            if (hash == 0) continue;              // 整行注释
+            if (hash > 0) line = line.substring(0, hash);   // 去掉行内注释
+            String[] parts = line.trim().split("\\s+");
+            if (parts.length < 2) continue;
+            String ip = parts[0];
+            try {
+                Address.getByAddress(ip);
+            } catch (Exception e) {
+                continue;
             }
-            reader.close();
-            inputStream.close();
-            // 解析完成后一次性替换，避免边解析边改让运行中的查询看到半张表
-            DOMAINS_IP_MAPS4 = maps4;
-            DOMAINS_IP_MAPS6 = maps6;
-            LogUtils.d(TAG, DOMAINS_IP_MAPS4.toString());
-            LogUtils.d(TAG, DOMAINS_IP_MAPS6.toString());
-            return DOMAINS_IP_MAPS4.size() + DOMAINS_IP_MAPS6.size();
+            for (int i = 1; i < parts.length; i++) {
+                String domain = parts[i];
+                if (domain.isEmpty()) continue;
+                if (!visitor.onRule(ip, domain)) return;
+            }
+        }
+    }
+
+    /** 从规则文本装载运行用的规则表 */
+    public static int loadFromText(String content) {
+        final ConcurrentHashMap<String, String> maps4 = new ConcurrentHashMap<>();
+        final ConcurrentHashMap<String, String> maps6 = new ConcurrentHashMap<>();
+        parseHosts(content, new RuleVisitor() {
+            @Override
+            public boolean onRule(String ip, String domain) {
+                if (ip.contains(":")) {
+                    maps6.put(domain + ".", ip);
+                } else {
+                    maps4.put(domain + ".", ip);
+                }
+                return true;
+            }
+        });
+        // 解析完成后一次性替换，避免边解析边改让运行中的查询看到半张表
+        DOMAINS_IP_MAPS4 = maps4;
+        DOMAINS_IP_MAPS6 = maps6;
+        LogUtils.d(TAG, "loaded rules4=" + maps4.size() + " rules6=" + maps6.size());
+        return maps4.size() + maps6.size();
+    }
+
+    /** 只统计条数，不碰运行中的规则表 */
+    public static int countOnly(InputStream inputStream) {
+        try {
+            return countText(readAll(inputStream));
         } catch (IOException e) {
-            LogUtils.d(TAG, "Hook dns error", e);
+            LogUtils.d(TAG, "count hosts error", e);
             return 0;
         }
     }
 
-    /**
-     * 只解析并返回有效规则条数，不碰运行中的规则表。
-     *
-     * 编辑器需要边输入边统计条数，如果直接调用 {@link #handle_hosts(InputStream)}，
-     * 会把 VPN 正在使用的 DOMAINS_IP_MAPS 覆盖成未保存的草稿内容。
-     */
-    public static int countOnly(InputStream inputStream) {
-        String STR_COMMENT = "#";
-        String HOST_PATTERN_STR = "^\\s*(" + STR_COMMENT + "?)\\s*(\\S*)\\s*([^" + STR_COMMENT + "]*)" + STR_COMMENT + "?(.*)$";
-        Pattern HOST_PATTERN = Pattern.compile(HOST_PATTERN_STR);
-        int count = 0;
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line;
-            while (!Thread.interrupted() && (line = reader.readLine()) != null) {
-                if (line.length() > 1000 || line.startsWith(STR_COMMENT)) continue;
-                Matcher matcher = HOST_PATTERN.matcher(line);
-                if (matcher.find()) {
-                    String ip = matcher.group(2).trim();
-                    try {
-                        Address.getByAddress(ip);
-                    } catch (Exception e) {
-                        continue;
-                    }
-                    if (!matcher.group(3).trim().isEmpty()) count++;
-                }
+    public static int countText(String content) {
+        final int[] count = {0};
+        parseHosts(content, new RuleVisitor() {
+            @Override
+            public boolean onRule(String ip, String domain) {
+                count[0]++;
+                return true;
             }
-            reader.close();
-            inputStream.close();
-        } catch (IOException e) {
-            LogUtils.d(TAG, "count hosts error", e);
+        });
+        return count[0];
+    }
+
+    private static String readAll(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        byte[] buf = new byte[4096];
+        int n;
+        while ((n = inputStream.read(buf)) != -1) {
+            bos.write(buf, 0, n);
         }
-        return count;
+        inputStream.close();
+        return bos.toString("UTF-8");
+    }
+
+    /** 兼容保留：从流装载规则表 */
+    public static int handle_hosts(InputStream inputStream) {
+        try {
+            return loadFromText(readAll(inputStream));
+        } catch (IOException e) {
+            LogUtils.d(TAG, "Hook dns error", e);
+            return 0;
+        }
     }
 
 }

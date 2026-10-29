@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="@dimen/space_md"
+              android:layout_marginEnd="@dimen/space_md"
+              android:layout_marginTop="@dimen/space_xs"
+              android:layout_marginBottom="@dimen/space_xs"
+              android:background="@color/surface"
+              android:gravity="center_vertical"
+              android:orientation="horizontal"
+              android:paddingStart="@dimen/space_md"
+              android:paddingEnd="@dimen/space_sm"
+              android:paddingTop="@dimen/space_sm"
+              android:paddingBottom="@dimen/space_sm">
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/rule_domain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/text_subtitle"
+                tools:text="example.com"/>
+
+        <TextView
+                android:id="@+id/rule_ip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="monospace"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/text_caption"
+                tools:text="127.0.0.1"/>
+    </LinearLayout>
+
+    <!-- 泛解析标记 -->
+    <TextView
+            android:id="@+id/rule_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_sm"
+            android:background="@drawable/bg_status_running"
+            android:paddingStart="@dimen/space_xs"
+            android:paddingEnd="@dimen/space_xs"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
+            android:text="@string/rule_wildcard"
+            android:textColor="@color/state_running"
+            android:textSize="@dimen/text_caption"
+            android:visibility="gone"/>
+
+    <ImageButton
+            android:id="@+id/rule_delete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/space_xs"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/rule_delete"
+            android:src="@drawable/ic_delete"
+            android:tint="@color/secondary_text"/>
+</LinearLayout>

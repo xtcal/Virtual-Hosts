@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.net.VpnService;
 import android.os.Build;
 import android.os.Looper;
@@ -33,8 +32,8 @@ import android.widget.Toast;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.github.xfalcon.vhosts.NetworkReceiver;
 import com.github.xfalcon.vhosts.R;
+import com.github.xfalcon.vhosts.RuleStore;
 import com.github.xfalcon.vhosts.SettingsFragment;
-import com.github.xfalcon.vhosts.VhostsActivity;
 import com.github.xfalcon.vhosts.util.LogUtils;
 import org.xbill.DNS.Address;
 
@@ -132,41 +131,38 @@ public class VhostsService extends VpnService {
     }
 
 
+    /**
+     * 装载规则。
+     *
+     * 现在只有一份规则来源：用户可编辑的规则列表（RuleStore）。
+     * 原先的本地文件/远程 URL 已降级为"导入到列表"的入口，
+     * 运行时不再按开关分支去读不同文件，避免"看到的不等于生效的"。
+     */
     private void setupHostFile() {
-        SharedPreferences settings = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        final String source = SettingsFragment.getHostsSource(this);
-        String uri_path = settings.getString(SettingsFragment.HOSTS_URI, null);
+        final String content;
         try {
-            final InputStream inputStream;
-            if (SettingsFragment.SOURCE_BUILTIN.equals(source)) {
-                inputStream = openFileInput(SettingsFragment.LOCAL_HOST_FILE);
-            } else if (SettingsFragment.SOURCE_URL.equals(source)) {
-                inputStream = openFileInput(SettingsFragment.NET_HOST_FILE);
-            } else {
-                inputStream = getContentResolver().openInputStream(Uri.parse(uri_path));
-            }
-            new Thread() {
-                public void run() {
-                    if (DnsChange.handle_hosts(inputStream) == 0) {
-                        Looper.prepare();
-                        if (SettingsFragment.SOURCE_FILE.equals(source)) {
-                            Toast.makeText(getApplicationContext(), R.string.no_local_record, Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getApplicationContext(), R.string.no_net_record, Toast.LENGTH_LONG).show();
-                        }
-                        Looper.loop();
-                    }
-                }
-            }.start();
-
+            content = RuleStore.read(this);
         } catch (Exception e) {
-            if (SettingsFragment.SOURCE_FILE.equals(source)) {
-                Toast.makeText(getApplicationContext(), R.string.no_local_record, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.no_net_record, Toast.LENGTH_LONG).show();
-            }
-            LogUtils.e(TAG, "error setup host file service", e);
+            LogUtils.e(TAG, "read rules failed", e);
+            Toast.makeText(getApplicationContext(), R.string.no_local_record, Toast.LENGTH_LONG).show();
+            return;
         }
+        if (content.trim().isEmpty()) {
+            Toast.makeText(getApplicationContext(), R.string.rules_empty_toast, Toast.LENGTH_LONG).show();
+            return;
+        }
+        new Thread() {
+            public void run() {
+                int count = DnsChange.loadFromText(content);
+                if (count == 0) {
+                    Looper.prepare();
+                    Toast.makeText(getApplicationContext(), R.string.no_local_record, Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                } else {
+                    LogUtils.i(TAG, "loaded " + count + " rules");
+                }
+            }
+        }.start();
     }
 
     private void setupVPN() {

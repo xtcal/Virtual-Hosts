@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@color/window_background"
+              tools:context=".RulesActivity">
+
+    <!-- 顶部汇总 -->
+    <TextView
+            android:id="@+id/rules_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/surface"
+            android:paddingStart="@dimen/space_md"
+            android:paddingEnd="@dimen/space_md"
+            android:paddingTop="@dimen/space_sm"
+            android:paddingBottom="@dimen/space_sm"
+            android:textColor="@color/secondary_text"
+            android:textSize="@dimen/text_caption"
+            tools:text="12 条规则"/>
+
+    <!-- 空状态 -->
+    <LinearLayout
+            android:id="@+id/rules_empty"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/space_xl"
+            android:visibility="gone">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rules_empty_title"
+                android:textColor="@color/primary_text"
+                android:textSize="@dimen/text_subtitle"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:gravity="center"
+                android:text="@string/rules_empty_hint"
+                android:textColor="@color/secondary_text"
+                android:textSize="@dimen/text_body"/>
+    </LinearLayout>
+
+    <!-- 规则列表 -->
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rules_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingTop="@dimen/space_sm"
+            android:paddingBottom="@dimen/space_sm"
+            android:scrollbars="vertical"/>
+
+    <!-- 底部导入与操作 -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/surface"
+            android:orientation="vertical"
+            android:paddingStart="@dimen/space_md"
+            android:paddingEnd="@dimen/space_md"
+            android:paddingTop="@dimen/space_sm"
+            android:paddingBottom="@dimen/space_md">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <Button
+                    android:id="@+id/button_import_local"
+                    style="@style/SecondaryActionButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="@dimen/space_xs"
+                    android:text="@string/rules_import_local"/>
+
+            <Button
+                    android:id="@+id/button_import_remote"
+                    style="@style/SecondaryActionButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="@dimen/space_xs"
+                    android:text="@string/rules_import_remote"/>
+        </LinearLayout>
+
+        <Button
+                android:id="@+id/button_add_rule"
+                style="@style/PrimaryActionButton"
+                android:layout_marginTop="@dimen/space_sm"
+                android:text="@string/rules_add"/>
+    </LinearLayout>
+</LinearLayout>

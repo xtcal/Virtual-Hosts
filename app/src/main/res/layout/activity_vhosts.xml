@@ -86,7 +86,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- ② 规则来源 -->
+        <!-- ② 规则列表：唯一的规则入口，导入文件与导入地址都在列表页内 -->
         <androidx.cardview.widget.CardView
                 android:id="@+id/card_source"
                 style="@style/CardSurface"
@@ -102,25 +102,19 @@
 
                 <TextView
                         style="@style/CardTitle"
-                        android:text="@string/source_title"/>
+                        android:text="@string/rules_title"/>
 
                 <TextView
                         android:id="@+id/source_value_text"
                         style="@style/CardCaption"
                         android:layout_marginTop="@dimen/space_xs"
-                        android:text="@string/source_builtin_desc"/>
+                        android:text="@string/rules_empty_hint"/>
 
                 <Button
                         android:id="@+id/button_edit_rules"
                         style="@style/PrimaryActionButton"
                         android:layout_marginTop="@dimen/space_md"
-                        android:text="@string/action_edit_rules"/>
-
-                <Button
-                        android:id="@+id/button_select_hosts"
-                        style="@style/SecondaryActionButton"
-                        android:layout_marginTop="@dimen/space_sm"
-                        android:text="@string/action_choose_file"/>
+                        android:text="@string/action_manage_rules"/>
 
                 <Button
                         android:id="@+id/button_settings"

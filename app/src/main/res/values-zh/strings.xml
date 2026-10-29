@@ -43,7 +43,51 @@
     <string name="down_success">下载成功，获取到 %d 条记录</string>
     <string name="down_error">下载失败</string>
     <string name="runing_notice">Virtual Hosts 正在运行</string>
+    <!-- 远程 hosts -->
+    <string name="remote_test_title">测试该地址</string>
+    <string name="remote_test_summary">只下载不保存，确认地址是否可用</string>
+    <string name="remote_download_title">立即下载</string>
+    <string name="remote_download_summary">下载并保存，随后把规则来源切到远程</string>
+    <string name="remote_cache_title">已缓存的规则</string>
+    <string name="remote_cache_empty">尚未下载过</string>
+    <string name="remote_cache_summary">已下载 %1$d 条规则%2$s</string>
+    <string name="remote_testing">正在测试地址…</string>
+    <string name="remote_test_result">测试结果</string>
+    <string name="remote_test_apply">使用它</string>
+
+    <!-- 规则列表 -->
+    <string name="rules_title">规则</string>
+    <string name="rules_summary">共 %d 条规则</string>
+    <string name="rules_summary_zero">暂无规则</string>
+    <string name="rules_empty_title">还没有规则</string>
+    <string name="rules_empty_hint">可以手动添加，也可以从本地文件或远程地址导入 hosts 文件。</string>
+    <string name="rules_add">添加规则</string>
+    <string name="rules_import_local">导入文件</string>
+    <string name="rules_import_remote">导入地址</string>
+    <string name="rules_ip_hint">IP 地址，例如 127.0.0.1</string>
+    <string name="rules_domain_hint">域名，例如 example.com 或 .example.com</string>
+    <string name="rules_url_hint">https://example.com/hosts</string>
+    <string name="rules_download">下载</string>
+    <string name="rules_test">测试</string>
+    <string name="rules_import_title">导入规则</string>
+    <string name="rules_import_message">从 %2$s 解析到 %1$d 条规则。\n\n替换当前列表，还是追加到末尾？</string>
+    <string name="rules_import_replace">替换</string>
+    <string name="rules_import_append">追加</string>
+    <string name="rules_imported">已导入 %d 条规则</string>
+    <string name="rules_import_failed">导入失败</string>
+    <string name="rules_import_no_valid">内容里没有找到可用的 hosts 规则</string>
+    <string name="import_from_file">所选文件</string>
+    <string name="rules_save_failed">规则保存失败</string>
+    <string name="rules_err_ip_empty">请填写 IP 地址</string>
+    <string name="rules_err_ip_invalid">IP 地址格式不正确</string>
+    <string name="rules_err_domain_empty">请填写域名</string>
+    <string name="rules_err_domain_invalid">域名格式不正确</string>
+    <string name="rules_empty_toast">规则列表为空，没有可应用的规则</string>
+    <string name="rule_wildcard">泛解析</string>
+    <string name="rule_delete">删除这条规则</string>
+
     <string name="pref_ps_set_hosts_url">设置网络hosts url</string>
+    <string name="pref_ps_rules">规则</string>
     <string name="pref_ps_set_cus_dns">设置自定义DNS</string>
     <string name="title_pref_remote_hosts">远程Hosts地址</string>
     <string name="pref_remote_hosts">远程Hosts地址</string>
@@ -76,7 +120,9 @@
 
     <!-- 主界面动作 -->
     <string name="action_edit_rules">编辑规则</string>
+    <string name="action_manage_rules">管理规则</string>
     <string name="action_choose_file">选择 hosts 文件</string>
+    <string name="action_remote_hosts">远程规则</string>
     <string name="action_boot_on">开机启动：已开启</string>
     <string name="action_boot_off">开机启动：已关闭</string>
     <string name="action_donate">打赏支持</string>

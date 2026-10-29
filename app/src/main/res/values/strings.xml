@@ -48,7 +48,51 @@
     <string name="down_error">Download Failed</string>
     <string name="runing_notice">Virtual Hosts Is Running</string>
 
+    <!-- 远程 hosts -->
+    <string name="remote_test_title">Test this URL</string>
+    <string name="remote_test_summary">Download once without saving, to check the address works</string>
+    <string name="remote_download_title">Download now</string>
+    <string name="remote_download_summary">Fetch and save, then switch rule source to remote</string>
+    <string name="remote_cache_title">Cached rules</string>
+    <string name="remote_cache_empty">Nothing downloaded yet</string>
+    <string name="remote_cache_summary">%1$d rules downloaded%2$s</string>
+    <string name="remote_testing">Testing address…</string>
+    <string name="remote_test_result">Test result</string>
+    <string name="remote_test_apply">Use it</string>
+
+    <!-- 规则列表 -->
+    <string name="rules_title">Rules</string>
+    <string name="rules_summary">%d rules in total</string>
+    <string name="rules_summary_zero">No rules yet</string>
+    <string name="rules_empty_title">No rules yet</string>
+    <string name="rules_empty_hint">Add one manually, or import a hosts file from local storage or a URL.</string>
+    <string name="rules_add">Add rule</string>
+    <string name="rules_import_local">Import file</string>
+    <string name="rules_import_remote">Import URL</string>
+    <string name="rules_ip_hint">IP address, e.g. 127.0.0.1</string>
+    <string name="rules_domain_hint">Domain, e.g. example.com or .example.com</string>
+    <string name="rules_url_hint">https://example.com/hosts</string>
+    <string name="rules_download">Download</string>
+    <string name="rules_test">Test</string>
+    <string name="rules_import_title">Import rules</string>
+    <string name="rules_import_message">Parsed %1$d rules from %2$s.\n\nReplace the current list, or append to it?</string>
+    <string name="rules_import_replace">Replace</string>
+    <string name="rules_import_append">Append</string>
+    <string name="rules_imported">Imported %d rules</string>
+    <string name="rules_import_failed">Import failed</string>
+    <string name="rules_import_no_valid">No valid hosts rule found in that content</string>
+    <string name="import_from_file">the selected file</string>
+    <string name="rules_save_failed">Failed to save rules</string>
+    <string name="rules_err_ip_empty">IP address is required</string>
+    <string name="rules_err_ip_invalid">Not a valid IP address</string>
+    <string name="rules_err_domain_empty">Domain is required</string>
+    <string name="rules_err_domain_invalid">Invalid domain</string>
+    <string name="rules_empty_toast">Rule list is empty, nothing to apply</string>
+    <string name="rule_wildcard">wildcard</string>
+    <string name="rule_delete">Delete this rule</string>
+
     <string name="pref_ps_set_hosts_url">set net hosts url</string>
+    <string name="pref_ps_rules">Rules</string>
     <string name="pref_ps_set_cus_dns">set custom dns</string>
 
     <string name="title_pref_remote_hosts">remote hosts url</string>
@@ -80,7 +124,9 @@
 
     <!-- 主界面动作 -->
     <string name="action_edit_rules">Edit rules</string>
+    <string name="action_manage_rules">Manage rules</string>
     <string name="action_choose_file">Choose hosts file</string>
+    <string name="action_remote_hosts">Remote hosts</string>
     <string name="action_boot_on">Boot start: on</string>
     <string name="action_boot_off">Boot start: off</string>
     <string name="action_donate">Donate</string>
