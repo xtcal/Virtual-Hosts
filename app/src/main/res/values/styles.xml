@@ -11,6 +11,8 @@
         <item name="android:editTextColor">@color/secondary_text</item>
         <item name="colorButtonNormal">@color/primary</item>
         <item name="dividerVertical">@color/divider</item>
+        <!-- 统一页面底色，卡片才有层次 -->
+        <item name="android:windowBackground">@color/window_background</item>
     </style>
 
     <style name="AppPreferenceTheme" parent="AppTheme">
@@ -21,6 +23,52 @@
 
         <item name="android:textColorPrimary">@color/primary_text</item>
 
+    </style>
+
+    <!-- 主界面卡片容器：白底、大圆角、低阴影 -->
+    <style name="CardSurface">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/space_md</item>
+        <item name="android:layout_marginEnd">@dimen/space_md</item>
+        <item name="android:layout_marginTop">@dimen/space_md</item>
+    </style>
+
+    <!-- 卡片内的标题文字 -->
+    <style name="CardTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_subtitle</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- 卡片内的说明文字 -->
+    <style name="CardCaption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textColor">@color/secondary_text</item>
+    </style>
+
+    <!-- 主操作按钮：统一高度与字号 -->
+    <style name="PrimaryActionButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/action_button_height</item>
+        <item name="android:textSize">@dimen/action_button_text_size</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="backgroundTint">@color/primary</item>
+        <item name="android:textColor">@color/icons</item>
+    </style>
+
+    <!-- 次要按钮：描边样式 -->
+    <style name="SecondaryActionButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/action_button_height</item>
+        <item name="android:textSize">@dimen/action_button_text_size</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:background">@drawable/bg_secondary_button</item>
     </style>
 
 </resources>

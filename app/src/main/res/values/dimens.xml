@@ -1,7 +1,37 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
+    <!-- 屏幕边距 -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <!-- 间距刻度，统一用这四档，避免各处硬编码 8/12/16/20 混用 -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_sm">8dp</dimen>
+    <dimen name="space_md">16dp</dimen>
+    <dimen name="space_lg">24dp</dimen>
+    <dimen name="space_xl">32dp</dimen>
+
+    <!-- 卡片 -->
+    <dimen name="card_corner_radius">12dp</dimen>
+    <dimen name="card_elevation">1dp</dimen>
+    <dimen name="card_content_padding">20dp</dimen>
+
+    <!-- 主开关 -->
+    <dimen name="switch_width">160dp</dimen>
+    <dimen name="switch_height">56dp</dimen>
+    <dimen name="switch_text_size">18sp</dimen>
+
+    <!-- 文字 -->
+    <dimen name="text_title">20sp</dimen>
+    <dimen name="text_subtitle">16sp</dimen>
+    <dimen name="text_body">14sp</dimen>
+    <dimen name="text_caption">12sp</dimen>
+
+    <!-- 状态灯 -->
+    <dimen name="status_dot_size">10dp</dimen>
+
+    <!-- 操作按钮 -->
+    <dimen name="action_button_height">48dp</dimen>
+    <dimen name="action_button_text_size">15sp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information

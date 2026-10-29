@@ -61,4 +61,45 @@
     <string name="no_net_record">warning! net hosts file no dns record, please check</string>
     <string name="no_local_record">warning! local hosts file no dns record, please check</string>
 
+    <!-- 主界面状态区 -->
+    <string name="status_running">Running</string>
+    <string name="status_stopped">Stopped</string>
+    <string name="status_running_desc">VPN is active, DNS queries are being intercepted</string>
+    <string name="status_stopped_desc">Tap the switch below to start intercepting DNS</string>
+    <string name="status_no_rules">No rules loaded yet</string>
+    <string name="status_rule_count">%d rules loaded</string>
+
+    <!-- 规则来源 -->
+    <string name="source_title">Rule source</string>
+    <string name="source_builtin">Built-in editor</string>
+    <string name="source_file">Local file</string>
+    <string name="source_url">Remote URL</string>
+    <string name="source_builtin_desc">Edit rules directly inside the app</string>
+    <string name="source_file_desc">Read from a hosts file you pick</string>
+    <string name="source_url_desc">Download from a remote hosts list</string>
+
+    <!-- 主界面动作 -->
+    <string name="action_edit_rules">Edit rules</string>
+    <string name="action_choose_file">Choose hosts file</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_boot_on">Boot start: on</string>
+    <string name="action_boot_off">Boot start: off</string>
+    <string name="action_donate">Donate</string>
+
+    <!-- 内置编辑器 -->
+    <string name="editor_title">Edit hosts rules</string>
+    <string name="editor_hint">One rule per line, IP followed by domain:\n\n127.0.0.1 example.com\n127.0.0.1 .wildcard.com</string>
+    <string name="editor_save">Save</string>
+    <string name="editor_cancel">Cancel</string>
+    <string name="editor_insert_sample">Insert sample</string>
+    <string name="editor_parsed_count">%d valid rules</string>
+    <string name="editor_parsed_zero">No valid rule yet</string>
+    <string name="editor_saved">Rules saved</string>
+    <string name="editor_discard_title">Discard changes?</string>
+    <string name="editor_discard_message">Your edits will be lost.</string>
+    <string name="editor_discard_confirm">Discard</string>
+    <string name="editor_sample"># Local overrides\n127.0.0.1 example.com\n127.0.0.1 .example.org\n::1 local.example
+
+</string>
+
 </resources>

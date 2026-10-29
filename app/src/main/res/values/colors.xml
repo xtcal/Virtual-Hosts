@@ -1,20 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 品牌主色：沿用原有 #03A9F4，避免整体风格跳变 -->
     <color name="primary">#03A9F4</color>
     <color name="primary_dark">#0288D1</color>
     <color name="primary_light">#B3E5FC</color>
     <color name="accent">#03A9F4</color>
+
+    <!-- 文字 -->
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
+
+    <!-- 背景与分隔 -->
+    <color name="window_background">#F5F7FA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="divider">#E0E0E0</color>
     <color name="icons">#FFFFFF</color>
-    <color name="divider">#BDBDBD</color>
+
+    <!-- 状态色：主界面用来区分 VPN 运行/停止 -->
+    <color name="state_running">#43A047</color>
+    <color name="state_running_light">#E8F5E9</color>
+    <color name="state_stopped">#E53935</color>
+    <color name="state_stopped_light">#FFEBEE</color>
+    <color name="state_warning">#FB8C00</color>
+    <color name="state_warning_light">#FFF3E0</color>
+
+    <!-- 开机自启开关用色，沿用原有取值 -->
     <color name="startup_on">#ff51d367</color>
     <color name="startup_off">#F44336</color>
+
+    <!-- 兼容旧布局里仍被引用的 FAB 配色 -->
     <color name="fab_yellowNormal">#ffeb3b</color>
     <color name="fb_yellowPressed">#FBC02D</color>
     <color name="fab_redNormal">#F44336</color>
     <color name="fb_redPressed">#d32f2f</color>
     <color name="fab_blackNormal">#29DDD6</color>
     <color name="fb_blackPressed">#28B9B3</color>
+
     <color name="ic_launcher_background">#2ecc71</color>
 </resources>

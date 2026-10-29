@@ -64,8 +64,6 @@ dependencies {
     // 源码直接 import 了它，之前仅靠其它库的传递依赖偶然带进来，这里显式声明
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.github.zcweng:switch-button:0.0.3@aar'
-    implementation 'com.github.clans:fab:1.6.4'
     implementation 'com.android.billingclient:billing:6.0.1'
     implementation 'org.slf4j:slf4j-api:1.7.36'
 

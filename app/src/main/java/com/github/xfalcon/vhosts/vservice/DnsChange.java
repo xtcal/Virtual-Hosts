@@ -110,8 +110,8 @@ public class DnsChange {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
-            DOMAINS_IP_MAPS4 = new ConcurrentHashMap<>();
-            DOMAINS_IP_MAPS6 = new ConcurrentHashMap<>();
+            ConcurrentHashMap<String, String> maps4 = new ConcurrentHashMap<>();
+            ConcurrentHashMap<String, String> maps6 = new ConcurrentHashMap<>();
             while (!Thread.interrupted() && (line = reader.readLine()) != null) {
                 if (line.length() > 1000 || line.startsWith(STR_COMMENT)) continue;
                 Matcher matcher = HOST_PATTERN.matcher(line);
@@ -123,14 +123,17 @@ public class DnsChange {
                         continue;
                     }
                     if (ip.contains(":")) {
-                        DOMAINS_IP_MAPS6.put(matcher.group(3).trim() + ".", ip);
+                        maps6.put(matcher.group(3).trim() + ".", ip);
                     } else {
-                        DOMAINS_IP_MAPS4.put(matcher.group(3).trim() + ".", ip);
+                        maps4.put(matcher.group(3).trim() + ".", ip);
                     }
                 }
             }
             reader.close();
             inputStream.close();
+            // 解析完成后一次性替换，避免边解析边改让运行中的查询看到半张表
+            DOMAINS_IP_MAPS4 = maps4;
+            DOMAINS_IP_MAPS6 = maps6;
             LogUtils.d(TAG, DOMAINS_IP_MAPS4.toString());
             LogUtils.d(TAG, DOMAINS_IP_MAPS6.toString());
             return DOMAINS_IP_MAPS4.size() + DOMAINS_IP_MAPS6.size();
@@ -138,6 +141,41 @@ public class DnsChange {
             LogUtils.d(TAG, "Hook dns error", e);
             return 0;
         }
+    }
+
+    /**
+     * 只解析并返回有效规则条数，不碰运行中的规则表。
+     *
+     * 编辑器需要边输入边统计条数，如果直接调用 {@link #handle_hosts(InputStream)}，
+     * 会把 VPN 正在使用的 DOMAINS_IP_MAPS 覆盖成未保存的草稿内容。
+     */
+    public static int countOnly(InputStream inputStream) {
+        String STR_COMMENT = "#";
+        String HOST_PATTERN_STR = "^\\s*(" + STR_COMMENT + "?)\\s*(\\S*)\\s*([^" + STR_COMMENT + "]*)" + STR_COMMENT + "?(.*)$";
+        Pattern HOST_PATTERN = Pattern.compile(HOST_PATTERN_STR);
+        int count = 0;
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while (!Thread.interrupted() && (line = reader.readLine()) != null) {
+                if (line.length() > 1000 || line.startsWith(STR_COMMENT)) continue;
+                Matcher matcher = HOST_PATTERN.matcher(line);
+                if (matcher.find()) {
+                    String ip = matcher.group(2).trim();
+                    try {
+                        Address.getByAddress(ip);
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    if (!matcher.group(3).trim().isEmpty()) count++;
+                }
+            }
+            reader.close();
+            inputStream.close();
+        } catch (IOException e) {
+            LogUtils.d(TAG, "count hosts error", e);
+        }
+        return count;
     }
 
 }

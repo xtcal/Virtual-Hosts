@@ -56,4 +56,45 @@
 
     <string name="no_net_record">提示! 网络文件不存在DNS记录,请检查</string>
     <string name="no_local_record">提示! 本地文件不存在DNS记录,请检查</string>
+
+    <!-- 主界面状态区 -->
+    <string name="status_running">运行中</string>
+    <string name="status_stopped">已停止</string>
+    <string name="status_running_desc">VPN 已启用，DNS 查询正在被接管</string>
+    <string name="status_stopped_desc">打开下方开关即可开始接管 DNS 查询</string>
+    <string name="status_no_rules">尚未载入规则</string>
+    <string name="status_rule_count">%d 条规则</string>
+
+    <!-- 规则来源 -->
+    <string name="source_title">规则来源</string>
+    <string name="source_builtin">内置编辑</string>
+    <string name="source_file">本地文件</string>
+    <string name="source_url">远程地址</string>
+    <string name="source_builtin_desc">直接在应用内编写规则</string>
+    <string name="source_file_desc">读取你选择的 hosts 文件</string>
+    <string name="source_url_desc">从远程 hosts 列表下载</string>
+
+    <!-- 主界面动作 -->
+    <string name="action_edit_rules">编辑规则</string>
+    <string name="action_choose_file">选择 hosts 文件</string>
+    <string name="action_settings">设置</string>
+    <string name="action_boot_on">开机启动：已开启</string>
+    <string name="action_boot_off">开机启动：已关闭</string>
+    <string name="action_donate">打赏支持</string>
+
+    <!-- 内置编辑器 -->
+    <string name="editor_title">编辑 hosts 规则</string>
+    <string name="editor_hint">每行一条规则，先写 IP 再写域名：\n\n127.0.0.1 example.com\n127.0.0.1 .wildcard.com</string>
+    <string name="editor_save">保存</string>
+    <string name="editor_cancel">取消</string>
+    <string name="editor_insert_sample">插入示例</string>
+    <string name="editor_parsed_count">%d 条有效规则</string>
+    <string name="editor_parsed_zero">暂无有效规则</string>
+    <string name="editor_saved">规则已保存</string>
+    <string name="editor_discard_title">放弃修改？</string>
+    <string name="editor_discard_message">你编辑的内容将不会被保存。</string>
+    <string name="editor_discard_confirm">放弃</string>
+    <string name="editor_sample"># 本地规则覆盖\n127.0.0.1 example.com\n127.0.0.1 .example.org\n::1 local.example
+
+</string>
 </resources>

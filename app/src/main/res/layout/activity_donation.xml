@@ -1,366 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context="com.github.xfalcon.vhosts.DonationActivity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="8dp">
-
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/window_background"
+            tools:context="com.github.xfalcon.vhosts.DonationActivity">
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:paddingBottom="@dimen/space_lg">
 
-            tools:layout_editor_absoluteY="0dp" tools:layout_editor_absoluteX="8dp">
-
+        <!-- 说明卡 -->
         <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
-        >
+                style="@style/CardSurface"
+                android:layout_marginTop="@dimen/space_md"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
 
-            <LinearLayout
+            <TextView
+                    android:id="@+id/notice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-            >
-
-                <TextView
-                        android:id="@+id/notice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/welcome"
-                        android:textSize="16sp"
-                />
-
-            </LinearLayout>
-
+                    android:padding="@dimen/card_content_padding"
+                    android:lineSpacingExtra="3dp"
+                    android:text="@string/welcome"
+                    android:textColor="@color/primary_text"
+                    android:textSize="@dimen/text_body"/>
         </androidx.cardview.widget.CardView>
 
+        <!-- 评价卡 -->
         <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
-        >
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp"
-            >
+                    android:padding="@dimen/card_content_padding">
 
                 <Button
                         android:id="@+id/bt_rate"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="@string/rate"
-                />
-
-
+                        style="@style/PrimaryActionButton"
+                        android:text="@string/rate"/>
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
+        <!--
+            支付宝 / 微信 / Paypal / 比特币：四个渠道结构完全一致，
+            这里保留各自 id 以便 DonationActivity 继续按渠道隐藏，
+            但统一尺寸、间距与文字样式，不再各写一堆 marginTop。
+        -->
         <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
                 android:id="@+id/cv_alipay"
-        >
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp"
-            >
+                    android:padding="@dimen/card_content_padding">
 
                 <Button
                         android:id="@+id/bt_alipay"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="@string/alipay"
-                />
-
-
+                        style="@style/SecondaryActionButton"
+                        android:text="@string/alipay"/>
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
                 android:id="@+id/cv_wexin"
-        >
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp"
-            >
-
+                    android:padding="@dimen/card_content_padding">
 
                 <Button
                         android:id="@+id/bt_weixin"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="@string/wechat"
-                />
-
+                        style="@style/SecondaryActionButton"
+                        android:text="@string/wechat"/>
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
                 android:id="@+id/cv_paypal"
-        >
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp"
-            >
-
+                    android:padding="@dimen/card_content_padding">
 
                 <Button
                         android:id="@+id/bt_paypal"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="@string/paypal"
-                />
-
+                        style="@style/SecondaryActionButton"
+                        android:text="@string/paypal"/>
             </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
-                android:id="@+id/cv_google"
-        >
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-            >
-
-
-                <Button
-                        android:id="@+id/bt_google"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:enabled="false"
-                        android:text="@string/googleplay"
-                />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
-                android:id="@+id/cv_google2"
-        >
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-            >
-
-
-                <Button
-                        android:id="@+id/bt_google2"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:enabled="false"
-                        android:text="@string/googleplay2"
-                />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
-                android:id="@+id/cv_google4"
-        >
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-            >
-
-
-                <Button
-                        android:id="@+id/bt_google4"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:enabled="false"
-                        android:text="@string/googleplay4"
-                />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
-                android:id="@+id/cv_google6"
-        >
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-            >
-
-
-                <Button
-                        android:id="@+id/bt_google6"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:enabled="false"
-                        android:text="@string/googleplay6"
-                />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
-                android:id="@+id/cv_google8"
-        >
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-            >
-
-
-                <Button
-                        android:id="@+id/bt_google8"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:enabled="false"
-                        android:text="@string/googleplay8"
-                />
-
-            </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
-                android:id="@+id/cv_google10"
-        >
-
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-            >
-
-
-                <Button
-                        android:id="@+id/bt_google10"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:enabled="false"
-                        android:text="@string/googleplay10"
-                />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:layout_marginTop="12dp"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="2dp"
                 android:id="@+id/cv_bit"
-        >
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
 
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="12dp"
-            >
-
+                    android:padding="@dimen/card_content_padding">
 
                 <Button
                         android:id="@+id/bt_bit"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="@string/bitcoin"
-                />
-
+                        style="@style/SecondaryActionButton"
+                        android:text="@string/bitcoin"/>
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
 
+        <!-- Google Play 内购：六个金额档位同样结构一致 -->
+        <androidx.cardview.widget.CardView
+                android:id="@+id/cv_google"
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_content_padding">
+
+                <Button
+                        android:id="@+id/bt_google"
+                        style="@style/SecondaryActionButton"
+                        android:enabled="false"
+                        android:text="@string/googleplay"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+                android:id="@+id/cv_google2"
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_content_padding">
+
+                <Button
+                        android:id="@+id/bt_google2"
+                        style="@style/SecondaryActionButton"
+                        android:enabled="false"
+                        android:text="@string/googleplay2"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+                android:id="@+id/cv_google4"
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_content_padding">
+
+                <Button
+                        android:id="@+id/bt_google4"
+                        style="@style/SecondaryActionButton"
+                        android:enabled="false"
+                        android:text="@string/googleplay4"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+                android:id="@+id/cv_google6"
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_content_padding">
+
+                <Button
+                        android:id="@+id/bt_google6"
+                        style="@style/SecondaryActionButton"
+                        android:enabled="false"
+                        android:text="@string/googleplay6"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+                android:id="@+id/cv_google8"
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_content_padding">
+
+                <Button
+                        android:id="@+id/bt_google8"
+                        style="@style/SecondaryActionButton"
+                        android:enabled="false"
+                        android:text="@string/googleplay8"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+                android:id="@+id/cv_google10"
+                style="@style/CardSurface"
+                app:cardBackgroundColor="@color/surface"
+                app:cardCornerRadius="@dimen/card_corner_radius"
+                app:cardElevation="@dimen/card_elevation">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/card_content_padding">
+
+                <Button
+                        android:id="@+id/bt_google10"
+                        style="@style/SecondaryActionButton"
+                        android:enabled="false"
+                        android:text="@string/googleplay10"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 </ScrollView>

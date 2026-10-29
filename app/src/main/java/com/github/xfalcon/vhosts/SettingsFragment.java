@@ -55,6 +55,33 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     public static final String IPV4_DNS = "IPV4_DNS";
     public static final String IS_CUS_DNS = "IS_CUS_DNS";
 
+    /** 内置编辑器写入的规则文件，放在 filesDir 下 */
+    public static final String LOCAL_HOST_FILE = "local_hosts";
+
+    /** 规则来源：内置编辑 / 本地文件 / 远程 URL */
+    public static final String HOSTS_SOURCE = "HOSTS_SOURCE";
+    public static final String SOURCE_BUILTIN = "BUILTIN";
+    public static final String SOURCE_FILE = "FILE";
+    public static final String SOURCE_URL = "URL";
+
+    /**
+     * 取当前规则来源。
+     *
+     * 老版本只有 IS_NET 一个布尔开关，升级上来的用户没有 HOSTS_SOURCE，
+     * 这里按旧值映射一次，保证行为不变。
+     */
+    public static String getHostsSource(Context context) {
+        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context);
+        String source = prefs.getString(HOSTS_SOURCE, null);
+        if (source != null) return source;
+        return prefs.getBoolean(IS_NET, false) ? SOURCE_URL : SOURCE_FILE;
+    }
+
+    public static void setHostsSource(Context context, String source) {
+        SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context);
+        prefs.edit().putString(HOSTS_SOURCE, source).apply();
+    }
+
     private Handler handler = null;
 
 
@@ -182,7 +209,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
                     Looper.prepare();
                     String result = HttpUtils.get(url);
                     FileUtils.writeFile(context.openFileOutput(NET_HOST_FILE, Context.MODE_PRIVATE), result);
-                    Toast.makeText(context, String.format(getString(R.string.down_success), DnsChange.handle_hosts(context.openFileInput(NET_HOST_FILE))), Toast.LENGTH_LONG).show();
+                    // 只统计条数，不装载规则表：VPN 正在运行时这条线不该被覆盖
+                    int count = DnsChange.countOnly(context.openFileInput(NET_HOST_FILE));
+                    // 下载完把来源切到远程，否则文件下好了却还在读本地
+                    setHostsSource(context, SOURCE_URL);
+                    Toast.makeText(context, String.format(getString(R.string.down_success), count), Toast.LENGTH_LONG).show();
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
