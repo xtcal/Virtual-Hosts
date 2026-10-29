@@ -82,9 +82,7 @@
                         android:id="@+id/switch_vpn"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/space_md"
-                        android:textOn="@string/status_running"
-                        android:textOff="@string/status_stopped"/>
+                        android:layout_marginTop="@dimen/space_md"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 

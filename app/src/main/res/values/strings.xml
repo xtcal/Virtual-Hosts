@@ -81,7 +81,6 @@
     <!-- 主界面动作 -->
     <string name="action_edit_rules">Edit rules</string>
     <string name="action_choose_file">Choose hosts file</string>
-    <string name="action_settings">Settings</string>
     <string name="action_boot_on">Boot start: on</string>
     <string name="action_boot_off">Boot start: off</string>
     <string name="action_donate">Donate</string>

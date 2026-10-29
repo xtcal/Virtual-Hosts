@@ -72,7 +72,7 @@ public class LabeledSwitch extends FrameLayout {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                setChecked(!isChecked());
+                toggle.setChecked(!toggle.isChecked());
             }
         });
 
@@ -90,21 +90,9 @@ public class LabeledSwitch extends FrameLayout {
     /** 切换状态但不触发回调，供外部同步 UI 用 */
     public void setCheckedSilently(boolean checked) {
         if (toggle.isChecked() != checked) {
-            toggle.setOnCheckedChangeListener(null);
             toggle.setChecked(checked);
-            toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    applyState(isChecked);
-                    if (listener != null) listener.onCheckedChanged(LabeledSwitch.this, isChecked);
-                }
-            });
         }
         applyState(checked);
-    }
-
-    public void setChecked(boolean checked) {
-        toggle.setChecked(checked);
     }
 
     public boolean isChecked() {
@@ -115,9 +103,13 @@ public class LabeledSwitch extends FrameLayout {
         this.listener = l;
     }
 
+    /**
+     * 只刷新两侧文字，不回头设置 toggle 的选中态。
+     *
+     * 早先这里也调了 toggle.setChecked()，会和 OnCheckedChangeListener 形成递归。
+     */
     private void applyState(boolean checked) {
         textOn.setVisibility(checked ? VISIBLE : GONE);
         textOff.setVisibility(checked ? GONE : VISIBLE);
-        toggle.setChecked(checked);
     }
 }

@@ -25,7 +25,8 @@
 
     </style>
 
-    <!-- 主界面卡片容器：白底、大圆角、低阴影 -->
+    <!-- 主界面卡片容器：统一的宽高与左右边距。
+         视觉属性（背景/圆角/阴影）留在各布局里显式写，便于逐张微调。 -->
     <style name="CardSurface">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

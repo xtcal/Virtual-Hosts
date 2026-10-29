@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Virtual Hosts</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">设置</string>
     <string name="update_button">更新</string>
     <string name="update_hosts">选择ip更新hosts</string>
     <string name="clear_hosts">清空hosts</string>
@@ -77,7 +77,6 @@
     <!-- 主界面动作 -->
     <string name="action_edit_rules">编辑规则</string>
     <string name="action_choose_file">选择 hosts 文件</string>
-    <string name="action_settings">设置</string>
     <string name="action_boot_on">开机启动：已开启</string>
     <string name="action_boot_off">开机启动：已关闭</string>
     <string name="action_donate">打赏支持</string>
