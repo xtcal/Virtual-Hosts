@@ -10,7 +10,7 @@ android {
         targetSdkVersion 36
         versionCode 43
         versionName "2.2.3"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
     productFlavors.all {
@@ -54,9 +54,15 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:32.1.0')
     implementation 'com.google.firebase:firebase-analytics'
 
-    implementation 'com.android.support:appcompat-v7:33.0.0'
-    implementation 'com.android.support:cardview-v7:33.0.0'
-    implementation 'com.android.support:preference-v7:33.0.0'
+    // com.android.support 这个 group 在 2018 年随 AndroidX 迁移停更，Google Maven 上最高只有
+    // 28.0.0，这里写的 33.0.0 从未存在过（bc0ee53 把 30.0.3 误改成 33.0.0），干净环境下
+    // 依赖解析必然失败。而源码里 import 的一直是 androidx.*，故改回真正的 androidx 坐标。
+    // appcompat 取 1.6.1 而非最新的 1.7.0：1.7.0 起 minSdk 抬到 21，会丢掉本项目支持的 API 19。
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.preference:preference:1.2.1'
+    // 源码直接 import 了它，之前仅靠其它库的传递依赖偶然带进来，这里显式声明
+    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
     implementation 'com.github.clans:fab:1.6.4'
@@ -64,9 +70,9 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.36'
 
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
     compileOnly 'org.projectlombok:lombok:1.18.42'
     annotationProcessor 'org.projectlombok:lombok:1.18.42'
