@@ -23,20 +23,18 @@ jobs:
 
       # AGP 8.12.x 要求 JDK 17（项目默认的 JDK 8 不行）
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
 
+      # 必须用 v4：v3 基于 node20 运行时，已被 GitHub Actions 淘汰，
+      # 会在这一步直接失败并导致后续所有 step 被 skip。
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
-      # 必须先接受许可证，否则 sdkmanager 安装会卡住/失败
-      - name: Accept SDK licenses
-        run: yes | sdkmanager --licenses > /dev/null || true
-
-      # compileSdk 36 / targetSdk 36 必须显式安装平台；两个 build-tools 都装，
-      # 免去猜 AGP 8.12.3 默认取哪个版本。
+      # v4 的 packages 默认只装 platform-tools；compileSdk 36 / targetSdk 36 必须显式装平台。
+      # 两个 build-tools 都装，免去猜 AGP 8.12.3 默认取哪个版本。
       - name: Install SDK platform 36
         run: |
           sdkmanager --install "platforms;android-36" "build-tools;36.0.0" "build-tools;35.0.0" "platform-tools"
